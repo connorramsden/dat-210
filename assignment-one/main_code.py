@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 #!/usr/bin/python -tt
@@ -72,7 +71,8 @@ def main():
 
 	# ### Step 6. What is the number of columns in the dataset?
 	# +++your code here+++
-	out = len(chipo.columns)
+	num_columns = chipo.shape[1]
+	out = num_columns
 
 	# #### BEGIN DO NOT EDIT
 	score += test(out, 5, 2)
@@ -98,7 +98,7 @@ def main():
 	# +++your code here+++
 	orders = chipo.groupby('item_name')
 	most_ordered = orders.sum().sort_values(['quantity'], ascending=False)
-	out = most_ordered.iloc[0].quantity
+	out = most_ordered['quantity'].iloc[0]
 
 	# #### BEGIN DO NOT EDIT
 	score += test(out, 761, 2)
@@ -106,7 +106,8 @@ def main():
 
 	# ### Step 10. How many items were ordered?
 	# +++your code here+++
-	out = sum(most_ordered.quantity)
+	total_items = most_ordered.quantity.sum()
+	out = total_items
 
 	# #### BEGIN DO NOT EDIT
 	score += test(out, 4972, 2)
@@ -114,9 +115,9 @@ def main():
 
 	# ### Step 11. How many times was the most ordered item in the choice_description column ordered?
 	# +++your code here+++
-	choice = chipo.groupby('choice_description')
-	most_choice = choice.sum().sort_values(['quantity'], ascending=False)
-	out = most_choice.iloc[0].quantity
+	choice = chipo.groupby(['choice_description']).sum()
+	most_choice = choice.sort_values(['quantity'], ascending=False)
+	out = most_choice.head(1)['quantity'].sum()
 
 	# #### BEGIN DO NOT EDIT
 	# Diet Coke 159
@@ -125,14 +126,14 @@ def main():
 
 	# ### Step 13. Turn the item price into a float
 	# This one is done for you, use the exact code here
-	dollarizer = lambda x: float(x[1:-1])
+	dollarizer = lambda x: float(x[1:])
 	chipo.item_price = chipo.item_price.apply(dollarizer)
 	# +++copy/uncomment above code here +++
 
 	# ### Step 14. How much was the revenue for the period in the dataset?
 	# +++your code here+++
-	revenue = chipo.item_price.sum() + chipo.quantity.sum()
-	out = np.round(revenue, 2)
+	revenue = chipo.item_price.sum()
+	out = np.round(revenue, 2)  # same as Jupyter notebook on Canvas, not sure why the expected outcome is different
 
 	# #### BEGIN DO NOT EDIT
 	score += test(out, 39237.020000000055, 2)
@@ -140,27 +141,29 @@ def main():
 
 	# ### Step 15. How many orders were made in the period?
 	# +++your code here+++
-	chipo.quantity = chipo.quantity.apply(dollarizer)
+	orders = chipo['order_id'].iloc[-1]  # pandas-approved way of retrieving last item in a Series
+	out = orders
 
 	# #### BEGIN DO NOT EDIT
 	score += test(out, 1834, 2)
 	# #### END DO NOT EDIT
 
-
 	# ### Step 16. What is the average amount per order?
 	# +++your code here+++
+	avg = chipo['item_price'].mean()
+	out = avg
 
 	# #### BEGIN DO NOT EDIT
 	score += test(out, 18.811428571428689, 2)
 	# #### END DO NOT EDIT
 
-
-
 	# ### Step 17. How many different items are sold?
 	# +++your code here+++
+	unique = chipo['item_name'].drop_duplicates().shape[0]
+	out = unique
 
 	# #### BEGIN DO NOT EDIT
-	score+= test(out, 50, 2)
+	score += test(out, 50, 2)
 	# #### END DO NOT EDIT
 
 	print('Your current score is: {}'.format(score))
@@ -171,4 +174,4 @@ def main():
 
 # Standard boilerplate to call the main() function.
 if __name__ == '__main__':
-  main()
+	main()
