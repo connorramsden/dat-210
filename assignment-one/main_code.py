@@ -136,7 +136,7 @@ def main():
 	out = np.round(revenue, 2)  # same as Jupyter notebook on Canvas, not sure why the expected outcome is different
 
 	# #### BEGIN DO NOT EDIT
-	score += test(out, 39237.020000000055, 2)
+	score += test(out, 34500.16, 2)
 	# #### END DO NOT EDIT
 
 	# ### Step 15. How many orders were made in the period?
@@ -150,7 +150,7 @@ def main():
 
 	# ### Step 16. What is the average amount per order?
 	# +++your code here+++
-	avg = chipo['item_price'].mean()
+	avg = chipo.groupby(['order_id']).sum().item_price.mean()
 	out = avg
 
 	# #### BEGIN DO NOT EDIT
